@@ -1,0 +1,61 @@
+name: Run Artillery with Playwright Integration
+
+# Trigger which git action (push, pull_request) 
+# in which branch(es) should start the jobs...
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# jobs to run
+jobs:
+  # Load testing and backend server startup
+  load-testing-and-backend:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]  # Set the required Node version (e.g., 20.x)
+
+    steps:
+      # Action from GitHub marketplace to checkout the repo on the server
+      - uses: actions/checkout@v4
+
+      # Setup Node.js with caching to optimize builds
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # Install the project dependencies via npm
+      - run: npm ci
+
+      # Start the backend server in the background (non-blocking with nohup)
+      - run: nohup node backend/index.js &
+        # Backend server needs to run for testing to interact with API
+
+      # Run the Playwright integration tests with Artillery
+      - name: Run Artillery test with Playwright
+        run: |
+          artillery run load-tests/playwright-test.yml
+        # Specify the path to your Artillery YAML test file (with Playwright integration)
+
+      # Upload Artillery results as artifacts (if generated)
+      - name: Upload results as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artillery-results
+          path: ./artillery-results
+        # Upload the test results (e.g., HTML reports) as artifacts
+
+      # Display the results of the tests (if in HTML format)
+      - name: Display results
+        run: cat ./artillery-results/report.html
+        # Output the report results for review
+
+      # Optionally, run any additional tests specified in package.json
+      - run: npm test
+        # This is useful for running unit tests or other tests alongside the load tests

@@ -1,0 +1,9 @@
+config:
+  target: http://127.0.0.1:4000
+  phases:
+    - duration: 10
+      arrivalRate: 2
+  processor: './playwrightProcessor.cjs' 
+scenarios:
+  - flow:
+      - function: runPlaywrightTest

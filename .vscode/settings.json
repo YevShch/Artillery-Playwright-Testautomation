@@ -1,0 +1,10 @@
+{
+  "yaml.schemas": {
+    "https://www.artillery.io/schema.json": [
+      "file:///Users/thomasfrank/Desktop/endpoint-testning-mataffaren/load-tests/basic.yml",
+      "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-test/load-tests/basic.yml",
+      "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-test/load-tests/plawright-test.yml",
+      "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-test/load-tests/playwright-test.yml"
+    ]
+  }
+}
