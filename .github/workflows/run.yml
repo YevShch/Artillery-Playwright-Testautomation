@@ -15,34 +15,45 @@ jobs:
         node-version: [20.x]
 
     steps:
+      # Checkout the repository
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: npm install
-
+      # Set up Node.js with caching
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
+      # Install project dependencies
+      - name: Install dependencies
+        run: npm install
+
       - run: npm ci
 
+      # Build the Vite project
+      - name: Build project
+        run: npm run build
+
       # Start the backend server in the background
-      - run: nohup node backend/index.js &
+      - name: Start backend server
+        run: nohup npm run backend &
 
-      # Run Artillery tests 
+      # Add a small delay to ensure the backend is running
+      # - name: Wait for backend to start
+      #   run: sleep 5
+
+      # Run Artillery load tests with Playwright integration
       - name: Run Artillery test with Playwright
-        run: |
-         npx artillery run load-tests/playwright-test.yml 
+        run: npx artillery run load-tests/playwright-test.yml
 
-      # Upload Artillery results as artifacts, even if the tests fail
+      # Upload Artillery results as artifacts
       - name: Upload results as artifacts
         uses: actions/upload-artifact@v3
         with:
           name: artillery-results
           path: ./artillery-results
 
-      # Optionally, display the results of the tests
-      - name: Display results (JSON format)
+      # Display Artillery results
+      - name: Display results
         run: cat ./artillery-results/report.json
