@@ -34,7 +34,7 @@ jobs:
       # Run Artillery tests and generate JSON and HTML reports
       - name: Run Artillery test with Playwright
         run: |
-          artillery run load-tests/playwright-test.yml --output ./artillery-results/report.json
+         npx artillery run load-tests/playwright-test.yml --output ./artillery-results/report.json
 
       # Upload Artillery results as artifacts, even if the tests fail
       - name: Upload results as artifacts
