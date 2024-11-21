@@ -41,7 +41,7 @@ jobs:
       - name: Run Artillery test with Playwright
         run: |
           artillery run load-tests/playwright-test.yml
-        # Specify the path to your Artillery YAML test file (with Playwright integration)
+     
 
       # Upload Artillery results as artifacts (if generated)
       - name: Upload results as artifacts
@@ -49,13 +49,12 @@ jobs:
         with:
           name: artillery-results
           path: ./artillery-results
-        # Upload the test results (e.g., HTML reports) as artifacts
+       
 
       # Display the results of the tests (if in HTML format)
       - name: Display results
         run: cat ./artillery-results/report.html
-        # Output the report results for review
-
+       
       # Optionally, run any additional tests specified in package.json
       - run: npm test
         # This is useful for running unit tests or other tests alongside the load tests
