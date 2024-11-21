@@ -14,9 +14,9 @@ module.exports = {
       const heading = page.getByRole( 'heading', { name: 'Kyckling Hel Färsk Sverige' } );
       await heading.click();
 
-      // await page.locator( 'text=Kött, chark & fågel' ).click();
-      const link = page.getByRole( 'link', { name: 'Kött, chark & fågel' } );
-      await link.click();
+      // // await page.locator( 'text=Kött, chark & fågel' ).click();
+      // const link = page.getByRole( 'link', { name: 'Kött, chark & fågel' } );
+      // await link.click();
 
       // // await page.locator( 'text=Fågel' ).click();
       // const link2 = page.getByRole( 'link', { name: 'Fågel' } );
