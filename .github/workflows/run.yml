@@ -29,8 +29,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - run: npm ci
-
       # Build the Vite project
       - name: Build project
         run: npm run build
@@ -39,13 +37,13 @@ jobs:
       - name: Start backend server
         run: nohup npm run backend &
 
-      # Add a small delay to ensure the backend is running
-      # - name: Wait for backend to start
-      #   run: sleep 5
+      # Ensure the results directory exists
+      - name: Create results directory
+        run: mkdir -p ./artillery-results
 
       # Run Artillery load tests with Playwright integration
       - name: Run Artillery test with Playwright
-        run: npx artillery run load-tests/playwright-test.yml
+        run: npx artillery run load-tests/playwright-test.yml --output ./artillery-results/report.json
 
       # Upload Artillery results as artifacts
       - name: Upload results as artifacts
