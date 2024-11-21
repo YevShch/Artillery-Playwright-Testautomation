@@ -1,0 +1,63 @@
+name: Run Artillery with Playwright Integration
+
+# Trigger which git action (push, pull_request) 
+# in which branch(es) should start the jobs...
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# jobs to run
+jobs:
+  # Load testing and backend server startup
+  load-testing-and-backend:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]  # Set the required Node version (e.g., 20.x)
+
+    steps:
+      # Action from GitHub marketplace to checkout the repo on the server
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      # Setup Node.js with caching to optimize builds
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # Install the project dependencies via npm
+      - run: npm ci
+
+      # Start the backend server in the background (non-blocking with nohup)
+      - run: nohup npm run backend &
+
+      # Add a delay to ensure the backend server is fully started
+      - name: Wait for the backend server to start
+        run: sleep 10  # Wait 10 seconds for the backend server to start
+
+      # Run the Playwright integration tests with Artillery
+      - name: Run Artillery test with Playwright
+        run: npx artillery run load-tests/playwright-test.yml  # Use npx to run locally installed Artillery
+
+      # Upload Artillery results as artifacts (if generated)
+      - name: Upload results as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artillery-results
+          path: ./artillery-results
+
+      # Display the results of the tests (if in HTML format)
+      - name: Display results
+        run: cat ./artillery-results/report.html
+
+      # Optionally, run any additional tests specified in package.json
+      - run: npm test
+        # This is useful for running unit tests or other tests alongside the load tests
