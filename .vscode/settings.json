@@ -7,7 +7,9 @@
       "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-test/load-tests/playwright-test.yml",
       "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-Playwright/load-tests/playwright-test.yml",
       "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-Playwright/load-tests/basic.yml",
-      "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-Playwright/load-tests/artillery%26playwrith.yml"
+      "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-Playwright/load-tests/artillery%26playwrith.yml",
+      "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-Playwright/load-tests/artillery%26playwright.yml",
+      "file:///c%3A/Users/Min%20Dator/Desktop/KYH%20Testautomatisering/Artillery-Playwright/load-tests/artillery_playwright.yml"
     ]
   }
 }
