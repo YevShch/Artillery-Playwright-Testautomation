@@ -54,10 +54,10 @@ module.exports = {
       console.log( 'Heading found:', headingVetekaka );
       expect( headingVetekaka ).to.equal( 'Vetekaka 24-pack' );
       
-      const productDetails2 = page.locator( 'div:has-text("Vetekaka 24-pack")' );
+      // const productDetails2 = page.locator( 'div:has-text("Vetekaka 24-pack")' );
 
-      const isVisible = await productDetails2.isVisible();
-      console.log( 'Is product details visible:', isVisible );
+      // const isVisible = await productDetails2.isVisible();
+      // console.log( 'Is product details visible:', isVisible );
       // expect( isVisible ).to.be.true; 
 
 

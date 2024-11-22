@@ -11,20 +11,34 @@ config:
       name: Ramp up load
     - duration: 10
       arrivalRate: 10
-      rampTo: 30np
+      rampTo: 30
       name: Spike phase
   plugins:
     ensure: {}
     apdex: {}
     metrics-by-endpoint: {}
+
   apdex:
     threshold: 100
+
   ensure:
     thresholds:
       - http.response_time.p99: 100
       - http.response_time.p95: 75
-  processor: './playwrightProcessor.cjs' 
+
+  processor: './playwrightProcessor.cjs'
+
 scenarios:
   - flow:
       - function: runPlaywrightTest
-    count: 100
+    count: 100  
+  
+  - flow:
+      - loop: 
+          - get:
+              url: "/kategori/frukt-och-gront"  
+          - get:
+              url: "/kategori/blommor-och-tradgard" 
+          - get:
+              url: "/kategori/apotek" 
+        count: 100 
