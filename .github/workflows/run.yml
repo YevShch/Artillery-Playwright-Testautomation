@@ -43,7 +43,7 @@ jobs:
 
       # Run Artillery load tests with Playwright integration
       - name: Run Artillery test with Playwright
-        run: npx artillery run load-tests/playwright-test.yml --output ./artillery-results/report.json
+        run: npx artillery run load-tests/artillery&playwrith.yml --output ./artillery-results/report.json
 
       # Upload Artillery results as artifacts
       - name: Upload results as artifacts
