@@ -6,5 +6,5 @@ config:
   processor: './playwrightProcessor.cjs' 
 scenarios:
   - flow:
-      - function: runPlaywrightTest
+      - function: runOrdinaryBuyerTest
 

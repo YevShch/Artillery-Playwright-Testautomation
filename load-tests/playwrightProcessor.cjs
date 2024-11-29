@@ -1,7 +1,6 @@
 module.exports = {
-  runPlaywrightTest: async function () {
+  runOrdinaryBuyerTest: async function () {
     const { chromium } = require( '@playwright/test' );
-    
     const { expect } = await import( 'chai' );
 
     const browser = await chromium.launch( { headless: true } );
@@ -74,7 +73,6 @@ module.exports = {
       const headingKardemumma = await productDetails.locator( 'h2' ).textContent();
       // console.log( 'Heading found:', headingKardemumma );
       expect( headingKardemumma ).to.equal( 'Kardemumma Skorpor' );
-
 
     } catch ( error ) {
       console.error( 'Error in Playwright test:', error );
