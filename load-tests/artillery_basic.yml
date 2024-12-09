@@ -5,14 +5,14 @@ config:
       arrivalRate: 1
       rampTo: 5
       name: Warm up phase
-    # - duration: 10
-    #   arrivalRate: 5
-    #   rampTo: 10
-    #   name: Ramp up load
-    # - duration: 10
-    #   arrivalRate: 10
-    #   rampTo: 30
-    #   name: Spike phase
+    - duration: 10
+      arrivalRate: 5
+      rampTo: 10
+      name: Ramp up load
+    - duration: 10
+      arrivalRate: 10
+      rampTo: 30
+      name: Spike phase
   plugins:
     ensure: {}
     apdex: {}
@@ -25,15 +25,8 @@ config:
     thresholds:
       - http.response_time.p99: 100
       - http.response_time.p95: 75
-
-  processor: './playwrightProcessor.cjs'
-
-scenarios:
-  - flow:
-      - function: runPlaywrightTest
-    # count: 10 
   
-  - flow:
+      - flow:
       - loop: 
           - get:
               url: "/kategori/frukt-och-gront"  

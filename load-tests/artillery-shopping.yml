@@ -1,0 +1,78 @@
+config:
+  target: http://127.0.0.1:4000
+  phases:
+    - duration: 180
+      arrivalRate: 2
+      rampTo: 5
+      name: Warm up phase
+  plugins:
+    ensure: {}
+    apdex: {}
+    metrics-by-endpoint: {}
+  apdex:
+    threshold: 100
+  ensure:
+    thresholds:
+      - http.response_time.p99: 200
+      - http.response_time.p95: 175
+
+scenarios:
+  - name: Complete URL Cycle
+    flow:
+      - get:
+          url: "/kategori/kott-chark-och-fagel"
+      - think: 1
+      - get:
+          url: "/kategori/kott-chark-och-fagel/fagel"
+      - think: 1
+      - get:
+          url: "/produkt/101219880_KG/kategori/kott-chark-och-fagel/fagel"
+      - think: 5
+      - get:
+          url: "/kategori/frukt-och-gront"
+      - think: 1
+      - get:
+          url: "/kategori/kott-chark-och-fagel/delikatesschark"
+      - think: 2
+      - get:
+          url: "/kategori/kott-chark-och-fagel/delikatesschark/inlaggningar"
+      - think: 4
+      - get:
+          url: "/produkt/101618362_ST/kategori/kott-chark-och-fagel/delikatesschark/inlaggningar"
+      - think: 6
+      - get:
+          url: "/kategori/frukt-och-gront/gronsaker"
+      - think: 1
+      - get:
+          url: "/kategori/frukt-och-gront/gronsaker/tomater"
+      - think: 1
+      - get:
+          url: "/produkt/100152264_KG/kategori/frukt-och-gront/gronsaker/tomater"
+      - think: 3
+      - get:
+          url: "/kategori/mejeri-ost-och-agg"
+      - think: 1
+      - get:
+          url: "/kategori/mejeri-ost-och-agg/ost"
+      - think: 2
+      - get:
+          url: "/kategori/mejeri-ost-och-agg/ost/farskost"
+      - think: 6
+      - get:
+          url: "/produkt/100393842_ST/kategori/mejeri-ost-och-agg/ost/farskost"
+      - think: 3
+      - get:
+          url: "/kategori/brod-och-kakor"
+      - think: 2
+      - get:
+          url: "/produkt/100921674_ST/kategori/brod-och-kakor"
+      - think: 5
+      - get:
+          url: "/kategori/skafferi"
+      - think: 1
+      - get:
+          url: "/kategori/skafferi/olja-och-vinager"
+      - think: 4
+      - get:
+          url: "/produkt/101442319_ST/kategori/skafferi/olja-och-vinager"
+      - think: 2

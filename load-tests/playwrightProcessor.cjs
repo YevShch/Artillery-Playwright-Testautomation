@@ -1,79 +1,131 @@
 module.exports = {
   runOrdinaryBuyerTest: async function () {
-    const { chromium } = require( '@playwright/test' );
+    const { chromium } = await import( '@playwright/test' );
     const { expect } = await import( 'chai' );
+
+    const logCustom = ( metric ) => {
+      // Use Artillery to log metrics
+      if ( global.artillery && global.artillery.logCustom ) {
+        global.artillery.logCustom( metric );
+      }
+    };
+
+    async function measureAction ( name, action ) {
+      const start = Date.now();
+      await action();
+      const duration = Date.now() - start;
+      console.log( `${ name } completed in ${ duration } ms` );
+      logCustom( { name, duration } );
+    }
 
     const browser = await chromium.launch( { headless: true } );
     const context = await browser.newContext();
     const page = await context.newPage();
 
     try {
-      // Step 1: Load the category page
-      await page.goto( 'http://localhost:4000/kategori/kott-chark-och-fagel' );
-      // console.log( 'Page loaded: /kategori/kott-chark-och-fagel' );
+      // Load the category page
+      await measureAction( 'Load category page', async () => {
+        await page.goto( 'http://localhost:4000/kategori/kott-chark-och-fagel' );
+      } );
 
-      // Step 2: Click on the link with the text "Kyckling Hel Färsk Sverige"
-      await page.locator( 'text=Kyckling Hel Färsk Sverige' ).click();
-      // console.log( 'Clicked on "Kyckling Hel Färsk Sverige" link.' );
+      await measureAction( 'Expand category menu', async () => {
+        await page.getByRole( 'link', { name: 'Kött, chark & fågel' } )
+          .locator( '..' )
+          .getByRole( 'button' )
+          .click();
+      } );
 
-      // // Step 3: Verify the product details
-      const productDetails = page.locator( 'div.product-details' );
-      // if ( !( await productDetails.isVisible() ) ) {
-      //   throw new Error( 'Product details are not visible.' );
-      // }
+      await measureAction( 'Navigate to Fågel', async () => {
+        await page.getByRole( 'link', { name: 'Fågel', exact: true } ).click();
+      } );
 
-      // Verify that the heading exists
-      const heading = await productDetails.locator( 'h2' ).textContent();
-      // console.log( 'Heading found:', heading );
-      expect( heading ).to.equal( 'Kyckling Hel Färsk Sverige' );
+      
+      await measureAction( 'Sort products', async () => {
+        await page.getByLabel( 'Sortera:' ).selectOption( 'name-asc' );
+      } );
 
-      // Verify the description
-      const description = await productDetails.locator( 'p:has-text("Beskrivning")' ).textContent();
-      // console.log( 'Description found:', description );
-      expect( description ).to.include( 'Färsk hel kyckling från Sverige' );
+      await measureAction( 'Click on Ankbröst Barbarie Fryst Frankrike', async () => {
+        await page.getByText( 'Ankbröst Barbarie Fryst Frankrike' ).click();
+      } );
 
-      // Verify the image source
-      const imageSrc = await productDetails.locator( 'img' ).getAttribute( 'src' );
-      // console.log( 'Image source:', imageSrc );
-      expect( imageSrc ).to.equal( 'https://assets.axfood.se/image/upload/f_auto,t_500/02359715300003_C1L1_s02' );
+      await measureAction( 'Verify product details', async () => {
+        const productDetails = page.locator( 'div.product-details' );
+        const heading = await productDetails.locator( 'h2' ).textContent();
+        expect( heading ).to.equal( 'Ankbröst Barbarie Fryst Frankrike' );
 
+        const description = await productDetails.locator( 'p:has-text("Ingredienser")' ).textContent();
+        expect( description ).to.include( 'Fryst Ankbröst (100%)' );
+
+        const imageSrc = await productDetails.locator( 'img' ).getAttribute( 'src' );
+        expect( imageSrc ).to.equal(
+          'https://d2rfo6yapuixuu.cloudfront.net/h6d/h1f/8857373736990/02375801300009.jpg_master_axfood_400'
+        );
+      } );
+
+      // Go to the PP "Italiensk Olivmix"
+      await measureAction( 'Navigate to Delikatesschark', async () => {
+        await page.getByRole( 'link', { name: 'Delikatesschark' } ).click();
+      } );
+
+      await measureAction( 'Navigate to Inläggningar', async () => {
+        await page.getByRole( 'link', { name: 'Inläggningar' } ).click();
+      } );
+
+      await measureAction( 'Sort products by compareprice', async () => {
+        await page.getByLabel( 'Sortera:' ).selectOption( 'compareprice-asc' );
+      } );
+
+      await measureAction( 'Click on Italiensk Olivmix', async () => {
+        await page.getByText( 'Italiensk Olivmix' ).click();
+      } );
+
+      // Go to "Mejeri" category and to the PP "Original"
+      await measureAction( 'Go to Mejeri category', async () => {
+        await page.getByRole( 'link', { name: 'Mejeri, ost & ägg' } ).click();
+      } );
+      await measureAction( 'Go to Ost category', async () => {
+        await page.getByRole( 'link', { name: 'Ost', exact: true } ).click();
+      } );
+      await measureAction( 'Go to Färskost category', async () => {
+        await page.getByRole( 'link', { name: 'Färskost' } ).click();
+      } );
+      await measureAction( 'Click on Original product', async () => {
+        await page.getByRole( 'heading', { name: 'Original', exact: true } ).click();
+      } );
     
-      //Go to the Bröd & kakor category
-      await page.locator( 'nav div:has(a:text("Bröd & Kakor"))' ).click();
-      // console.log( 'Clicked on "Bröd & Kakor".' );
 
-
-      //Visit Product page for Vetekaka 24-pack
-     const heading2 = page.getByRole( 'heading', { name: 'Vetekaka 24-pack' } );
-      await heading2.click();
-      // console.log( 'Clicked on "Vetekaka 24-pack" heading.' );
+      // Go to the "Bröd" category >> PP "Källarfranska"
+      await measureAction( 'Go to Bröd category', async () => {
+        await page.getByRole( 'link', { name: 'Bröd' } ).click();
+      } );
+      await measureAction( 'Sort products by price', async () => {
+        await page.getByLabel( 'Sortera:' ).selectOption( 'price-asc' );
+      } );
+      await measureAction( 'Click on Källarfranska product', async () => {
+        await page.getByRole( 'heading', { name: 'Källarfranska' } ).click();
+      } );
       
-      // Verify that the heading for Vetekaka exists
-      const headingVetekaka = await productDetails.locator( 'h2' ).textContent();
-      // console.log( 'Heading found:', headingVetekaka );
-      expect( headingVetekaka ).to.equal( 'Vetekaka 24-pack' );
-      
-      // const productDetails2 = page.locator( 'div:has-text("Vetekaka 24-pack")' );
 
-      // const isVisible = await productDetails2.isVisible();
-      // console.log( 'Is product details visible:', isVisible );
-      // expect( isVisible ).to.be.true; 
+      // Go to the "Skafferi" category >> PP "Extra Virgin Olivolja"
+      await measureAction( 'Go to Skafferi category', async () => {
+        await page.getByRole( 'link', { name: 'Skafferi' } ).click();
+      } );
+      await measureAction( 'Go to Olja & vinäger category', async () => {
+        await page.getByRole( 'link', { name: 'Olja & vinäger' } ).click();
+      } );
+      await measureAction( 'Go to Olivolja category', async () => {
+        await page.getByRole( 'link', { name: 'Olivolja', exact: true } ).click();
+      } );
+      await measureAction( 'Sort products by name', async () => {
+        await page.getByLabel( 'Sortera:' ).selectOption( 'name-asc' );
+      } );
+      await measureAction( 'Click on Extra Virgin Olivolja product', async () => {
+        await page.getByRole( 'heading', { name: 'Extra Virgin Olivolja', exact: true } ).click();
+      } );
+    
 
-
-      // Click on Knäckebröd & Skorpor
-      await page.locator( 'nav a:text("Knäckebröd & Skorpor")' ).click();
-      // console.log( 'Clicked on "Knäckebröd & Skorpor".' );
-     
-
-      //Visit Product page for Kardemumma Skorpor
-      const heading3 = page.getByRole( 'heading', { name: 'Kardemumma Skorpor' } );
-      await heading3.click();
-      // console.log( 'Clicked on "Kardemumma Skorpor.' );
-      // Verify that the heading exists
-      const headingKardemumma = await productDetails.locator( 'h2' ).textContent();
-      // console.log( 'Heading found:', headingKardemumma );
-      expect( headingKardemumma ).to.equal( 'Kardemumma Skorpor' );
-
+   
+      console.log( 'Shopping completed!' );
     } catch ( error ) {
       console.error( 'Error in Playwright test:', error );
     } finally {
