@@ -5,24 +5,7 @@ config:
       arrivalRate: 2
       # rampTo: 5
     #   name: Warm up phase
-    # - duration: 10
-    #   arrivalRate: 5
-    #   rampTo: 10
-    #   name: Ramp up load
-    # - duration: 10
-    #   arrivalRate: 10
-    #   rampTo: 10
-    #   name: Spike phase
-  plugins:
-    ensure: {}
-    apdex: {}
-    metrics-by-endpoint: {}
-  # apdex:
-  #   threshold: 100
-  # ensure:
-  #   thresholds:
-  #     - http.response_time.p99: 300
-  #     - http.response_time.p95: 250
+ 
   processor: './playwrightProcessor.cjs' 
 scenarios:
   - flow:
