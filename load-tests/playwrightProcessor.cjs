@@ -23,6 +23,9 @@ module.exports = {
     const page = await context.newPage();
 
     try {
+      const globalTimeout = 180000; // 180 seconds
+      page.setDefaultTimeout( globalTimeout );
+
       // Load the category page
       await measureAction( 'Load category page', async () => {
         await page.goto( 'http://localhost:4000/kategori/kott-chark-och-fagel' );
